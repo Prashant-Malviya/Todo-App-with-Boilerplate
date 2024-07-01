@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button, TextArea, VerticalStackLayout, Spinner, LabelLarge } from '../../components';
-import { getComments, createComment, updateComment, deleteComment } from '../../api/comment-api';
+import { getComments, createComment, updateComment, deleteComment } from './comment-api';
 import { Comment } from '../../types/comment';
+import { VerticalStackLayout, Button, Input, Spinner } from '../../components';
+import { ButtonKind, ButtonSize } from '../../types/button';
 
 interface CommentSectionProps {
   taskId: string;
@@ -9,17 +10,16 @@ interface CommentSectionProps {
 
 const CommentSection: React.FC<CommentSectionProps> = ({ taskId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [commentText, setCommentText] = useState<string>('');
+  const [newComment, setNewComment] = useState<string>('');
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
-  const [editedCommentText, setEditedCommentText] = useState<string>('');
+  const [editingCommentText, setEditingCommentText] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchComments = async () => {
-      setIsLoading(true);
       try {
-        const response = await getComments(taskId);
-        setComments(response);
+        const fetchedComments = await getComments(taskId);
+        setComments(fetchedComments);
       } catch (error) {
         console.error('Failed to fetch comments', error);
       } finally {
@@ -30,24 +30,26 @@ const CommentSection: React.FC<CommentSectionProps> = ({ taskId }) => {
     fetchComments();
   }, [taskId]);
 
-  const handleCommentSubmit = async () => {
+  const handleCreateComment = async () => {
     try {
-      const newComment = await createComment(taskId, commentText);
-      setComments([...comments, newComment]);
-      setCommentText('');
+      const newCommentObj = await createComment(taskId, newComment);
+      setComments([...comments, newCommentObj]);
+      setNewComment('');
     } catch (error) {
-      console.error('Failed to submit comment', error);
+      console.error('Failed to create comment', error);
     }
   };
 
-  const handleEditComment = async (commentId: string) => {
+  const handleUpdateComment = async (commentId: string) => {
     try {
-      const updatedComment = await updateComment(commentId, editedCommentText);
+      const updatedComment = await updateComment(commentId, editingCommentText);
       setComments(
-        comments.map((comment) => (comment.id === commentId ? updatedComment : comment))
+        comments.map((comment) =>
+          comment.commentId === commentId ? updatedComment : comment
+        )
       );
       setEditingCommentId(null);
-      setEditedCommentText('');
+      setEditingCommentText('');
     } catch (error) {
       console.error('Failed to update comment', error);
     }
@@ -56,7 +58,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ taskId }) => {
   const handleDeleteComment = async (commentId: string) => {
     try {
       await deleteComment(commentId);
-      setComments(comments.filter((comment) => comment.id !== commentId));
+      setComments(comments.filter((comment) => comment.commentId !== commentId));
     } catch (error) {
       console.error('Failed to delete comment', error);
     }
@@ -67,45 +69,64 @@ const CommentSection: React.FC<CommentSectionProps> = ({ taskId }) => {
   }
 
   return (
-    <VerticalStackLayout gap={4} className="p-4 border-t mt-4">
+    <VerticalStackLayout gap={3}>
       {comments.map((comment) => (
-        <div key={comment.id} className="p-2 border-b">
-          {editingCommentId === comment.id ? (
-            <div>
-              <TextArea
-                value={editedCommentText}
-                onChange={(e) => setEditedCommentText(e.target.value)}
+        <div key={comment.commentId} className="p-2 border-b">
+          {editingCommentId === comment.commentId ? (
+            <>
+              <Input
+                value={editingCommentText}
+                onChange={(e) => setEditingCommentText(e.target.value)}
               />
-              <Button onClick={() => handleEditComment(comment.id)} disabled={!editedCommentText.trim()}>
-                Save
+              <Button
+                onClick={() => handleUpdateComment(comment.commentId)}
+                kind={ButtonKind.PRIMARY}
+                size={ButtonSize.DEFAULT}
+              >
+                Update
               </Button>
-              <Button onClick={() => setEditingCommentId(null)}>
+              <Button
+                onClick={() => {
+                  setEditingCommentId(null);
+                  setEditingCommentText('');
+                }}
+                kind={ButtonKind.SECONDARY}
+                size={ButtonSize.DEFAULT}
+              >
                 Cancel
               </Button>
-            </div>
+            </>
           ) : (
-            <div>
-              <LabelLarge>{comment.text}</LabelLarge>
-              <Button onClick={() => {
-                setEditingCommentId(comment.id);
-                setEditedCommentText(comment.text);
-              }}>
+            <>
+              <p>{comment.comment}</p>
+              <Button
+                onClick={() => {
+                  setEditingCommentId(comment.commentId);
+                  setEditingCommentText(comment.comment);
+                }}
+                kind={ButtonKind.SECONDARY}
+                size={ButtonSize.SMALL}
+              >
                 Edit
               </Button>
-              <Button onClick={() => handleDeleteComment(comment.id)}>
+              <Button
+                onClick={() => handleDeleteComment(comment.commentId)}
+                kind={ButtonKind.DANGER}
+                size={ButtonSize.SMALL}
+              >
                 Delete
               </Button>
-            </div>
+            </>
           )}
         </div>
       ))}
-      <TextArea
-        value={commentText}
-        onChange={(e) => setCommentText(e.target.value)}
-        placeholder="Add a comment..."
+      <Input
+        placeholder="Add a comment"
+        value={newComment}
+        onChange={(e) => setNewComment(e.target.value)}
       />
-      <Button onClick={handleCommentSubmit} disabled={!commentText.trim()}>
-        Submit Comment
+      <Button onClick={handleCreateComment} kind={ButtonKind.PRIMARY} size={ButtonSize.DEFAULT}>
+        Add Comment
       </Button>
     </VerticalStackLayout>
   );

@@ -1,11 +1,15 @@
-import React, { useEffect, useCallback, useMemo } from 'react';
-import { VerticalStackLayout, HeadingMedium } from '../../components'; 
-import { useTaskContext } from '../../contexts'; 
+import React, { useEffect, useCallback, useMemo, useState } from 'react';
+import { VerticalStackLayout, HeadingMedium, Button } from '../../components';
+import { useTaskContext } from '../../contexts';
+import { CommentSection } from './comment-section';
+import { ButtonKind, ButtonSize } from '../../types/button';
 
 const SharedTasks: React.FC = () => {
   const { getSharedTasks, isGetSharedTasksLoading, sharedTasksList } = useTaskContext();
   const userAccessToken = JSON.parse(localStorage.getItem('access-token') || '{}');
   const accountId = useMemo(() => userAccessToken.accountId, [userAccessToken]);
+
+  const [showComments, setShowComments] = useState<{ [key: string]: boolean }>({});
 
   const getSharedTasksCallback = useCallback(() => {
     getSharedTasks(accountId);
@@ -14,6 +18,13 @@ const SharedTasks: React.FC = () => {
   useEffect(() => {
     getSharedTasksCallback();
   }, [getSharedTasksCallback]);
+
+  const toggleComments = (taskId: string) => {
+    setShowComments((prev) => ({
+      ...prev,
+      [taskId]: !prev[taskId],
+    }));
+  };
 
   return (
     <div className="mx-auto h-screen max-w-screen-2xl overflow-y-auto p-4 md:p-6 2xl:p-10">
@@ -38,6 +49,16 @@ const SharedTasks: React.FC = () => {
                 <p className="text-sm text-gray-500">
                   Shared at: {new Date(sharedTask.sharedAt).toLocaleString()}
                 </p>
+                <Button
+                  onClick={() => toggleComments(sharedTask.task.taskId)}
+                  kind={ButtonKind.SECONDARY}
+                  size={ButtonSize.DEFAULT}
+                >
+                  {showComments[sharedTask.task.taskId] ? 'Hide Comments' : 'Show Comments'}
+                </Button>
+                {showComments[sharedTask.task.taskId] && (
+                  <CommentSection taskId={sharedTask.task.taskId} />
+                )}
               </div>
             ))
           )}

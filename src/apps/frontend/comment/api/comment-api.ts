@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Comment } from '../types/comment';
+import { Comment } from '../../types/comment';
 
 export const getComments = async (taskId: string): Promise<Comment[]> => {
   const response = await axios.get(`/tasks/${taskId}/comments`);
