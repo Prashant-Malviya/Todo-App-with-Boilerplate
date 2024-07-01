@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+
 import {
   Button,
   HeadingSmall,
@@ -12,10 +13,12 @@ import {
 import { AsyncError } from '../../types';
 import { ButtonKind, ButtonSize } from '../../types/button';
 import { Task } from '../../types/task';
+
 import TaskModal from './task-modal';
 import useTaskForm from './tasks-form.hook';
 import { PiShareFatLight } from 'react-icons/pi';
-import CommentSection from './comment-section'; // Import the CommentSection component
+
+import CommentSection from './comment-section';
 
 interface TaskSectionProps {
   handleDeleteTask: (taskId: string) => void;
@@ -33,7 +36,7 @@ const TaskSection: React.FC<TaskSectionProps> = ({
   tasks,
 }) => {
   const [updateTaskModal, setUpdateTaskModal] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<string | null>(null); // Track the selected task for comments
+  const [showComments, setShowComments] = useState<{ [key: string]: boolean }>({});
 
   const onSuccess = () => {
     toast.success('Task has been updated successfully');
@@ -52,8 +55,11 @@ const TaskSection: React.FC<TaskSectionProps> = ({
     setFormikFieldValue(updateTaskFormik, 'description', task.description);
   };
 
-  const handleCommentClick = (taskId: string) => {
-    setSelectedTask(selectedTask === taskId ? null : taskId);
+  const toggleComments = (taskId: string) => {
+    setShowComments((prev) => ({
+      ...prev,
+      [taskId]: !prev[taskId],
+    }));
   };
 
   if (isGetTasksLoading) {
@@ -114,15 +120,16 @@ const TaskSection: React.FC<TaskSectionProps> = ({
                 Share
               </Button>
               <Button
-                onClick={() => handleCommentClick(task.taskId)}
+                onClick={() => toggleComments(task.taskId)}
                 kind={ButtonKind.SECONDARY}
                 size={ButtonSize.DEFAULT}
               >
-                Comment
+                {showComments[task.taskId] ? 'Hide Comments' : 'Show Comments'}
               </Button>
             </MenuItem>
           </div>
-          {selectedTask === task.taskId && <CommentSection taskId={task.taskId} />} {/* Render CommentSection conditionally */}
+
+          {showComments[task.taskId] && <CommentSection taskId={task.taskId} />}
         </div>
       ))}
 

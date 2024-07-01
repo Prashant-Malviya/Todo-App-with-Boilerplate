@@ -6,13 +6,13 @@ export const getComments = async (taskId: string): Promise<Comment[]> => {
   return response.data;
 };
 
-export const createComment = async (taskId: string, text: string): Promise<Comment> => {
-  const response = await axios.post('/comments', { taskId, comment: text });
+export const createComment = async (taskId: string, comment: string): Promise<Comment> => {
+  const response = await axios.post('/comments', { taskId, comment });
   return response.data;
 };
 
-export const updateComment = async (commentId: string, text: string): Promise<Comment> => {
-  const response = await axios.put(`/comments/${commentId}`, { comment: text });
+export const updateComment = async (commentId: string, comment: string): Promise<Comment> => {
+  const response = await axios.put(`/comments/${commentId}`, { comment });
   return response.data;
 };
 

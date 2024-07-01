@@ -1,25 +1,40 @@
-import CommentReader from './internal/comment-reader';
-import CommentWriter from './internal/comment-writer';
-import { CreateCommentParams, EditCommentParams, GetCommentsParams, Comment } from './types';
+import CommentRepository from './store/comment-repository';
+import CommentUtil from './comment-util';
+import { CreateCommentParams, EditCommentParams, Comment } from '../types';
 
 export default class CommentService {
   public static async createComment(params: CreateCommentParams): Promise<Comment> {
-    return CommentWriter.createComment(params);
+    const commentDb = await CommentRepository.create({
+      task: new Types.ObjectId(params.taskId),
+      user: new Types.ObjectId(params.userId),
+      comment: params.comment,
+      active: true,
+    });
+    return CommentUtil.convertCommentDBToComment(commentDb);
   }
 
   public static async editComment(params: EditCommentParams): Promise<Comment | null> {
-    return CommentWriter.editComment(params);
+    const commentDb = await CommentRepository.findByIdAndUpdate(
+      params.commentId,
+      { comment: params.comment },
+      { new: true }
+    );
+    return commentDb ? CommentUtil.convertCommentDBToComment(commentDb) : null;
   }
 
   public static async deleteComment(commentId: string): Promise<void> {
-    return CommentWriter.deleteComment(commentId);
+    await CommentRepository.findByIdAndUpdate(commentId, { active: false });
   }
 
   public static async getComments(params: GetCommentsParams): Promise<Comment[]> {
-    return CommentReader.getComments(params);
+    const commentsDb = await CommentRepository.find({
+      task: params.taskId,
+      active: true,
+    });
+    return commentsDb.map((commentDb) => CommentUtil.convertCommentDBToComment(commentDb));
   }
 
   public static async replyToComment(params: CreateCommentParams): Promise<Comment> {
-    return CommentWriter.replyToComment(params);
+    return this.createComment(params);
   }
 }
