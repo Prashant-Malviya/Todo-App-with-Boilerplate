@@ -1,15 +1,15 @@
 import { Schema, Types, Document, model } from 'mongoose';
 
-export interface CommentDB extends Document {
+export interface IComment extends Document {
   task: Types.ObjectId;
   user: Types.ObjectId;
-  comment: string;
-  active: boolean;
+  text: string;
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export const CommentSchema: Schema<CommentDB> = new Schema<CommentDB>(
+const commentSchema: Schema<IComment> = new Schema<IComment>(
   {
     task: {
       type: Schema.Types.ObjectId,
@@ -23,25 +23,22 @@ export const CommentSchema: Schema<CommentDB> = new Schema<CommentDB>(
       required: true,
       index: true,
     },
-    comment: {
+    text: {
       type: String,
       required: true,
     },
-    active: {
+    isActive: {
       type: Boolean,
       default: true,
     },
   },
   {
     collection: 'comments',
-    timestamps: {
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
-    },
+    timestamps: true,
   }
 );
 
-CommentSchema.index({ task: 1, user: 1, createdAt: 1 });
+commentSchema.index({ task: 1, user: 1, createdAt: 1 });
 
-const CommentModel = model<CommentDB>('Comment', CommentSchema);
+const CommentModel = model<IComment>('Comment', commentSchema);
 export default CommentModel;

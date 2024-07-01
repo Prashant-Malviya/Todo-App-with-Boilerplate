@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-
 import {
   Button,
   HeadingSmall,
@@ -13,10 +12,10 @@ import {
 import { AsyncError } from '../../types';
 import { ButtonKind, ButtonSize } from '../../types/button';
 import { Task } from '../../types/task';
-
 import TaskModal from './task-modal';
 import useTaskForm from './tasks-form.hook';
 import { PiShareFatLight } from 'react-icons/pi';
+import CommentSection from './comment-section'; // Import the CommentSection component
 
 interface TaskSectionProps {
   handleDeleteTask: (taskId: string) => void;
@@ -34,6 +33,7 @@ const TaskSection: React.FC<TaskSectionProps> = ({
   tasks,
 }) => {
   const [updateTaskModal, setUpdateTaskModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<string | null>(null); // Track the selected task for comments
 
   const onSuccess = () => {
     toast.success('Task has been updated successfully');
@@ -50,6 +50,10 @@ const TaskSection: React.FC<TaskSectionProps> = ({
     setFormikFieldValue(updateTaskFormik, 'title', task.title);
     setFormikFieldValue(updateTaskFormik, 'taskId', task.taskId);
     setFormikFieldValue(updateTaskFormik, 'description', task.description);
+  };
+
+  const handleCommentClick = (taskId: string) => {
+    setSelectedTask(selectedTask === taskId ? null : taskId);
   };
 
   if (isGetTasksLoading) {
@@ -109,8 +113,16 @@ const TaskSection: React.FC<TaskSectionProps> = ({
               >
                 Share
               </Button>
+              <Button
+                onClick={() => handleCommentClick(task.taskId)}
+                kind={ButtonKind.SECONDARY}
+                size={ButtonSize.DEFAULT}
+              >
+                Comment
+              </Button>
             </MenuItem>
           </div>
+          {selectedTask === task.taskId && <CommentSection taskId={task.taskId} />} {/* Render CommentSection conditionally */}
         </div>
       ))}
 

@@ -1,5 +1,4 @@
 import { ApplicationServer } from '../../application';
-
 import CommentRouter from '../rest-api/comment-router';
 
 export default class CommentServer extends ApplicationServer {
