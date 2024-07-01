@@ -2,8 +2,8 @@ export interface Comment {
     id: string;
     taskId: string;
     userId: string;
-    text: string;
-    isActive: boolean;
+    comment: string;
+    active: boolean;
     createdAt: string;
     updatedAt: string;
   }

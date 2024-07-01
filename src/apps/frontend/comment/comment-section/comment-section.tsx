@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button, TextArea, VerticalStackLayout, Spinner } from '../../components';
-import { getComments, createComment } from '../../api/comment-api'; // Make sure to implement these API calls
+import { Button, TextArea, VerticalStackLayout, Spinner, LabelLarge } from '../../components';
+import { getComments, createComment, updateComment, deleteComment } from '../../api/comment-api';
 import { Comment } from '../../types/comment';
 
 interface CommentSectionProps {
@@ -11,6 +11,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({ taskId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [commentText, setCommentText] = useState<string>('');
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editedCommentText, setEditedCommentText] = useState<string>('');
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -38,6 +40,28 @@ const CommentSection: React.FC<CommentSectionProps> = ({ taskId }) => {
     }
   };
 
+  const handleEditComment = async (commentId: string) => {
+    try {
+      const updatedComment = await updateComment(commentId, editedCommentText);
+      setComments(
+        comments.map((comment) => (comment.id === commentId ? updatedComment : comment))
+      );
+      setEditingCommentId(null);
+      setEditedCommentText('');
+    } catch (error) {
+      console.error('Failed to update comment', error);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      await deleteComment(commentId);
+      setComments(comments.filter((comment) => comment.id !== commentId));
+    } catch (error) {
+      console.error('Failed to delete comment', error);
+    }
+  };
+
   if (isLoading) {
     return <Spinner />;
   }
@@ -46,7 +70,33 @@ const CommentSection: React.FC<CommentSectionProps> = ({ taskId }) => {
     <VerticalStackLayout gap={4} className="p-4 border-t mt-4">
       {comments.map((comment) => (
         <div key={comment.id} className="p-2 border-b">
-          {comment.text}
+          {editingCommentId === comment.id ? (
+            <div>
+              <TextArea
+                value={editedCommentText}
+                onChange={(e) => setEditedCommentText(e.target.value)}
+              />
+              <Button onClick={() => handleEditComment(comment.id)} disabled={!editedCommentText.trim()}>
+                Save
+              </Button>
+              <Button onClick={() => setEditingCommentId(null)}>
+                Cancel
+              </Button>
+            </div>
+          ) : (
+            <div>
+              <LabelLarge>{comment.text}</LabelLarge>
+              <Button onClick={() => {
+                setEditingCommentId(comment.id);
+                setEditedCommentText(comment.text);
+              }}>
+                Edit
+              </Button>
+              <Button onClick={() => handleDeleteComment(comment.id)}>
+                Delete
+              </Button>
+            </div>
+          )}
         </div>
       ))}
       <TextArea
