@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import { PiShareFat } from 'react-icons/pi';
 
 import {
   Button,
@@ -16,6 +17,7 @@ import { Task } from '../../types/task';
 
 import TaskModal from './task-modal';
 import useTaskForm from './tasks-form.hook';
+import ShareTaskModal from './share-task-modal';
 
 interface TaskSectionProps {
   handleDeleteTask: (taskId: string) => void;
@@ -31,6 +33,8 @@ const TaskSection: React.FC<TaskSectionProps> = ({
   tasks,
 }) => {
   const [updateTaskModal, setUpdateTaskModal] = useState(false);
+  const [shareTaskModal, setShareTaskModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const onSuccess = () => {
     toast.success('Task has been updated successfully');
@@ -47,6 +51,11 @@ const TaskSection: React.FC<TaskSectionProps> = ({
     setFormikFieldValue(updateTaskFormik, 'title', task.title);
     setFormikFieldValue(updateTaskFormik, 'id', task.id);
     setFormikFieldValue(updateTaskFormik, 'description', task.description);
+  };
+
+  const handleShareTask = (task: Task) => {
+    setSelectedTask(task);
+    setShareTaskModal(true);
   };
 
   if (isGetTasksLoading) {
@@ -98,6 +107,14 @@ const TaskSection: React.FC<TaskSectionProps> = ({
               >
                 Delete
               </Button>
+              <Button
+                onClick={() => handleShareTask(task)}
+                kind={ButtonKind.SECONDARY}
+                size={ButtonSize.DEFAULT}
+                startEnhancer={<PiShareFat />}
+              >
+                Share Task
+              </Button>
             </MenuItem>
           </div>
         </div>
@@ -109,6 +126,14 @@ const TaskSection: React.FC<TaskSectionProps> = ({
         setIsModalOpen={setUpdateTaskModal}
         btnText={'Update Task'}
       />
+
+      {selectedTask && (
+        <ShareTaskModal
+          isModalOpen={shareTaskModal}
+          setIsModalOpen={setShareTaskModal}
+          task={selectedTask}
+        />
+      )}
     </VerticalStackLayout>
   );
 };
