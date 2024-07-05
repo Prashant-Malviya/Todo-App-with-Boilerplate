@@ -18,9 +18,9 @@ export interface CreateCommentParams {
 
 export interface UpdateCommentParams {
   taskId: string;
-  commentId: string;
   accountId: string;
   comment: string;
+  commentId: string;
 }
 
 export interface DeleteCommentParams {

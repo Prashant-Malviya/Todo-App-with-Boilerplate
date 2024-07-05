@@ -18,6 +18,8 @@ import { Task } from '../../types/task';
 import TaskModal from './task-modal';
 import useTaskForm from './tasks-form.hook';
 import ShareTaskModal from './share-task-modal';
+import NewComment from '../../comment/new-comment';
+import CommentList from '../../comment/comment-list';
 
 interface TaskSectionProps {
   handleDeleteTask: (taskId: string) => void;
@@ -35,6 +37,8 @@ const TaskSection: React.FC<TaskSectionProps> = ({
   const [updateTaskModal, setUpdateTaskModal] = useState(false);
   const [shareTaskModal, setShareTaskModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+
 
   const onSuccess = () => {
     toast.success('Task has been updated successfully');
@@ -66,6 +70,8 @@ const TaskSection: React.FC<TaskSectionProps> = ({
     );
   }
 
+  
+
   return (
     <VerticalStackLayout gap={7}>
       {tasks.length > 0 && (
@@ -83,6 +89,16 @@ const TaskSection: React.FC<TaskSectionProps> = ({
           <VerticalStackLayout gap={3}>
             <LabelLarge>{task.title}</LabelLarge>
             <ParagraphSmall>{task.description}</ParagraphSmall>
+
+            <Button onClick={() => setSelectedTaskId(task.id)}>
+              View Comments
+            </Button>
+            {selectedTaskId === task.id && (
+              <div>
+                <NewComment taskId={task.id} />
+                <CommentList taskId={task.id} />
+              </div>
+            )}
           </VerticalStackLayout>
 
           <div className="absolute right-4 top-4">
@@ -129,10 +145,11 @@ const TaskSection: React.FC<TaskSectionProps> = ({
 
       {selectedTask && (
         <ShareTaskModal
-          isModalOpen={shareTaskModal}
+          isModalOpen={shareTaskModal === true}
           setIsModalOpen={setShareTaskModal}
-          task={selectedTask}
-        />
+          task={selectedTask} show={false} onHide={function (): void {
+            throw new Error('Function not implemented.');
+          } }        />
       )}
     </VerticalStackLayout>
   );

@@ -14,6 +14,12 @@ interface ShareTaskModalProps {
   task: Task;
 }
 
+interface ShareTaskModalProps {
+  isModalOpen: boolean;
+  setIsModalOpen: (open: boolean) => void;
+  task: Task;
+}
+
 const ShareTaskModal: React.FC<ShareTaskModalProps> = ({ show, onHide, task }) => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
