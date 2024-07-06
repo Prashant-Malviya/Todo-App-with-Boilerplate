@@ -12,7 +12,7 @@ import {
 import { serializeCommentAsJSON } from './comment-serializer';
 
 export class CommentController {
-  public async createNewComment(req: Request<CreateCommentParams>, res: Response): Promise<void> {
+  public async createComment(req: Request<CreateCommentParams>, res: Response): Promise<void> {
     const { taskId, comment } = req.body;
     const accountId = req.accountId;
 

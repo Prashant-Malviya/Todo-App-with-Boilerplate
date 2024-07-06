@@ -1,10 +1,12 @@
+import { Account } from '../account';
 import { ApplicationError } from '../application';
 import { HttpStatusCodes } from '../http';
+import { Task } from '../task';
 
 export class SharedTask {
   id: string;
-  task: any;
-  account: any;
+  task: string | Task;
+  account: string | Account;
 }
 
 export type CreateSharedTaskParams = {

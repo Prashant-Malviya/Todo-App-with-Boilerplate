@@ -5,10 +5,10 @@ export default class SharedTaskUtil {
   public static convertSharedTaskDBToSharedTask(
     sharedTaskDb: SharedTaskDB
   ): SharedTask {
-    return {
-      id: sharedTaskDb._id.toString(),
-      task: sharedTaskDb.task,
-      account: sharedTaskDb.account.toString(),
-    };
+    const sharedTask = new SharedTask();
+    sharedTask.id = sharedTaskDb._id.toString();
+    sharedTask.task = sharedTaskDb.task.toString(),
+    sharedTask.account = sharedTaskDb.account.toString();
+    return sharedTask;
   }
 }

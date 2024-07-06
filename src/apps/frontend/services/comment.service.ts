@@ -2,8 +2,6 @@ import { AccessToken, ApiError, ApiResponse } from '../types';
 import { Comment } from '../types/comment';
 import { JsonObject } from '../types/common-types';
 
-import APIService from './api.service';
-
 export default class CommentService {
   private apiClientWithAuth = (method: string, url: string, body?: object) => {
     const userAccessToken = JSON.parse(

@@ -23,9 +23,11 @@ export const CommentDbSchema: Schema = new Schema<CommentDB>(
       index: true,
       required: true,
     },
+    
     comment: {
       type: String,
       required: true,
+      active: true,
     },
   },
   {

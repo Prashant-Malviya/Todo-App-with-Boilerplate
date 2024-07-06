@@ -1,13 +1,13 @@
+import { Account } from '../account';
 import { ApplicationError } from '../application';
 import { HttpStatusCodes } from '../http';
+import { Task } from '../task';
 
 export class Comment {
   id!: string;
-  task!: string;
-  account!: any;
+  task!: string | Task;
+  account!: string | Account;
   comment!: string;
-  createdAt!: Date;
-  updatedAt!: Date;
 }
 
 export interface CreateCommentParams {

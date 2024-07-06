@@ -41,12 +41,17 @@ import {
     }
   
     public static async deleteComment(
-      { accountId, commentId }: DeleteCommentParams,
+      {commentId }: DeleteCommentParams,
     ): Promise<void> {
-      const comment = await CommentRepository.findOneAndDelete({
-        _id: commentId,
-        account: accountId,
-      });
+      const comment = await CommentRepository.findByIdAndUpdate(
+        commentId,
+        {
+          $set: {
+            active: false,
+          },
+        },
+        { new: true },
+      ).populate('account');
 
       if (!comment) {
         throw new CommentNotFoundError(commentId);
