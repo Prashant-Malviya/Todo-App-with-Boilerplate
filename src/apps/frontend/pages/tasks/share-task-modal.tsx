@@ -81,12 +81,12 @@ const ShareTaskModal: React.FC<ShareTaskModalProps> = ({ show, onHide, task }) =
   return (
     <Modal show={show} onHide={closeModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Share Task</Modal.Title>
+        <Modal.Title>Share Task With Your Friends</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
           <Form.Group controlId="search">
-            <Form.Label>Search Accounts</Form.Label>
+            <Form.Label>Search here...</Form.Label>
             <Form.Control
               type="text"
               value={search}
@@ -106,7 +106,7 @@ const ShareTaskModal: React.FC<ShareTaskModalProps> = ({ show, onHide, task }) =
                   key={account.id}
                   type="checkbox"
                   id={`account-${account.id}`}
-                  label={`${account.firstName} ${account.lastName} (${account.username})`}
+                  label={`${account.firstName} `}
                   checked={selectedAccounts.includes(account.id)}
                   onChange={() => handleAccountSelect(account.id)}
                 />

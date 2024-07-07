@@ -19,7 +19,7 @@ import TaskModal from './task-modal';
 import useTaskForm from './tasks-form.hook';
 import ShareTaskModal from './share-task-modal';
 import NewComment from '../../comment/new-comment';
-import CommentList from '../../comment/comment-list';
+import Comments from '../../comment/comments';
 
 interface TaskSectionProps {
   handleDeleteTask: (taskId: string) => void;
@@ -96,7 +96,7 @@ const TaskSection: React.FC<TaskSectionProps> = ({
             {selectedTaskId === task.id && (
               <div>
                 <NewComment taskId={task.id} />
-                <CommentList taskId={task.id} />
+                <Comments taskId={task.id} />
               </div>
             )}
           </VerticalStackLayout>

@@ -15,7 +15,7 @@ interface CommentListProps {
   taskId: string;
 }
 
-const CommentList: React.FC<CommentListProps> = ({ taskId }) => {
+const Comments: React.FC<CommentListProps> = ({ taskId }) => {
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
   const [editedComment, setEditedComment] = useState<string>('');
   const {
@@ -140,5 +140,5 @@ const CommentList: React.FC<CommentListProps> = ({ taskId }) => {
   );
 };
 
-export default CommentList;
+export default Comments;
 
