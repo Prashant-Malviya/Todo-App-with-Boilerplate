@@ -4,6 +4,12 @@ import toast from 'react-hot-toast';
 import { useCommentContext } from '../contexts/comment.provider';
 import { Comment } from '../types/comment';
 import { AsyncError } from '../types';
+import { GiCancel } from "react-icons/gi";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { TbEdit } from "react-icons/tb";
+import { GrEdit } from "react-icons/gr";
+
+
 
 interface CommentListProps {
   taskId: string;
@@ -86,14 +92,15 @@ const CommentList: React.FC<CommentListProps> = ({ taskId }) => {
                     variant="primary"
                     type="submit"
                   >
-                    Update
+                    <GrEdit />
                   </Button>
                   <Button
                     onClick={() => setSelectedCommentId(null)}
                     variant="secondary"
                     className="ml-2"
                   >
-                    Cancel
+                    <GiCancel />
+
                   </Button>
                 </Form.Group>
               </Form>
@@ -102,9 +109,9 @@ const CommentList: React.FC<CommentListProps> = ({ taskId }) => {
                 <div className="d-flex flex-column">
                   <p className="mb-2">{comment.comment}</p>
                   <p className="text-muted">
-                    By{' '}
-                    {`${comment.account.firstName} ${comment.account.lastName} (${comment.account.username})`}{' '}
-                    at {new Date(comment.createdAt).toLocaleString()}
+                   
+                    {`${comment.account.firstName}  (${comment.account.username})`}{' '}
+                     {new Date(comment.createdAt).toLocaleString()}
                   </p>
                 </div>
                 <div className="d-flex">
@@ -113,13 +120,15 @@ const CommentList: React.FC<CommentListProps> = ({ taskId }) => {
                     variant="warning"
                     className="mr-2"
                   >
-                    Edit
+                    <TbEdit />
+
                   </Button>
                   <Button
                     onClick={() => handleDeleteComment(comment.id)}
                     variant="danger"
                   >
-                    Delete
+                    <RiDeleteBin6Line />
+
                   </Button>
                 </div>
               </div>
