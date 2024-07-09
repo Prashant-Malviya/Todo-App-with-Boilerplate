@@ -8,3 +8,4 @@ const SharedTaskRepository = ApplicationRepository<SharedTaskDB>(
 );
 
 export default SharedTaskRepository;
+

@@ -13,3 +13,4 @@ export default class SharedTaskRouter extends ApplicationRouter {
     router.get('/', controller.getSharedTasks);
   }
 }
+

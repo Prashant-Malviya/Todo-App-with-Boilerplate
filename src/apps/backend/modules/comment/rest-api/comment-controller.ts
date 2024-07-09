@@ -56,3 +56,4 @@ export class CommentController {
     res.status(HttpStatusCodes.OK).send(commentJSON);
   }
 }
+

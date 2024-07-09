@@ -31,7 +31,7 @@ import {
           },
         },
         { new: true },
-      ).populate('account');
+      );
 
       if (!updatedComment) {
         throw new CommentNotFoundError(params.commentId);
@@ -51,11 +51,12 @@ import {
           },
         },
         { new: true },
-      ).populate('account');
+      );
 
       if (!comment) {
         throw new CommentNotFoundError(commentId);
       }
     }
   }
+  
   

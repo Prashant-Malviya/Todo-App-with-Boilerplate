@@ -8,3 +8,4 @@ const CommentRepository = ApplicationRepository<CommentDB>(
 );
 
 export default CommentRepository;
+

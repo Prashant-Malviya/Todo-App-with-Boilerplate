@@ -19,3 +19,4 @@ export default class SharedTaskService {
     return SharedTaskReader.getSharedTasksForAccount(params);
   }
 }
+

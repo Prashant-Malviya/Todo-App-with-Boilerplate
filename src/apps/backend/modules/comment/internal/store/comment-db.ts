@@ -5,6 +5,7 @@ export interface CommentDB {
   task: Types.ObjectId;
   account: Types.ObjectId;
   comment: string;
+  active: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,6 +30,11 @@ export const CommentDbSchema: Schema = new Schema<CommentDB>(
       required: true,
       active: true,
     },
+    active: {
+      type: Boolean,
+      default: true, 
+      required: true,
+    },
   },
   {
     collection: 'comments',
@@ -38,3 +44,5 @@ export const CommentDbSchema: Schema = new Schema<CommentDB>(
     },
   },
 );
+
+

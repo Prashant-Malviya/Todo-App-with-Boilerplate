@@ -7,8 +7,17 @@ export default class SharedTaskUtil {
   ): SharedTask {
     const sharedTask = new SharedTask();
     sharedTask.id = sharedTaskDb._id.toString();
-    sharedTask.task = sharedTaskDb.task.toString(),
+    
+
+    if (typeof sharedTaskDb.task === 'string') {
+      sharedTask.task = sharedTaskDb.task;
+    } else {
+      sharedTask.task = JSON.stringify(sharedTaskDb.task);
+    }
+
     sharedTask.account = sharedTaskDb.account.toString();
     return sharedTask;
   }
 }
+
+

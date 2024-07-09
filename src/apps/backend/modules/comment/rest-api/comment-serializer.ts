@@ -13,3 +13,4 @@ export const serializeCommentAsJSON = (comment: Comment): unknown => ({
   createdAt: comment.createdAt,
   updatedAt: comment.updatedAt,
 });
+

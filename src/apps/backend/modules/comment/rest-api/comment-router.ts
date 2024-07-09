@@ -16,3 +16,4 @@ export default class CommentRouter extends ApplicationRouter {
     router.delete('/:id', controller.deleteComment);
   }
 }
+

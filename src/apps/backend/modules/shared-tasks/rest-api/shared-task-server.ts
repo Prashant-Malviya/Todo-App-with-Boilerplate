@@ -10,3 +10,4 @@ export default class SharedTaskServer extends ApplicationServer {
     server.use('/shared-tasks', router.router);
   }
 }
+

@@ -17,3 +17,4 @@ export function serializeSharedTaskAsJSON(sharedTask: SharedTask): object {
     account: sharedTask.account,
   };
 }
+

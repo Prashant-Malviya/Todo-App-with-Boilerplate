@@ -10,3 +10,4 @@ export default class CommentServer extends ApplicationServer {
     server.use('/comments', router.router);
   }
 }
+
