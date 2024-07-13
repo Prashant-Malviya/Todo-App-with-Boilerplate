@@ -2,7 +2,6 @@ import { Server } from 'http';
 
 import App from '../../src/apps/backend/app';
 
-// eslint-disable-next-line import/no-mutable-exports
 export let app: Server;
 
 export const startApplication = async (): Promise<void> => {

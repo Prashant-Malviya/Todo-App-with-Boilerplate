@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import { PiShareFat } from 'react-icons/pi';
 
 import {
   Button,
@@ -16,6 +17,9 @@ import { Task } from '../../types/task';
 
 import TaskModal from './task-modal';
 import useTaskForm from './tasks-form.hook';
+import ShareTaskModal from './share-task-modal';
+import NewComment from '../../comment/new-comment';
+import Comments from '../../comment/comments';
 
 interface TaskSectionProps {
   handleDeleteTask: (taskId: string) => void;
@@ -31,6 +35,10 @@ const TaskSection: React.FC<TaskSectionProps> = ({
   tasks,
 }) => {
   const [updateTaskModal, setUpdateTaskModal] = useState(false);
+  const [shareTaskModal, setShareTaskModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+
 
   const onSuccess = () => {
     toast.success('Task has been updated successfully');
@@ -49,6 +57,11 @@ const TaskSection: React.FC<TaskSectionProps> = ({
     setFormikFieldValue(updateTaskFormik, 'description', task.description);
   };
 
+  const handleShareTask = (task: Task) => {
+    setSelectedTask(task);
+    setShareTaskModal(true);
+  };
+
   if (isGetTasksLoading) {
     return (
       <div className="flex h-96 w-full items-center justify-center">
@@ -56,6 +69,8 @@ const TaskSection: React.FC<TaskSectionProps> = ({
       </div>
     );
   }
+
+  
 
   return (
     <VerticalStackLayout gap={7}>
@@ -74,6 +89,16 @@ const TaskSection: React.FC<TaskSectionProps> = ({
           <VerticalStackLayout gap={3}>
             <LabelLarge>{task.title}</LabelLarge>
             <ParagraphSmall>{task.description}</ParagraphSmall>
+
+            <Button onClick={() => setSelectedTaskId(task.id)}>
+              View Comments
+            </Button>
+            {selectedTaskId === task.id && (
+              <div>
+                <NewComment taskId={task.id} />
+                <Comments taskId={task.id} />
+              </div>
+            )}
           </VerticalStackLayout>
 
           <div className="absolute right-4 top-4">
@@ -98,6 +123,14 @@ const TaskSection: React.FC<TaskSectionProps> = ({
               >
                 Delete
               </Button>
+              <Button
+                onClick={() => handleShareTask(task)}
+                kind={ButtonKind.SECONDARY}
+                size={ButtonSize.DEFAULT}
+                startEnhancer={<PiShareFat />}
+              >
+                Share Task
+              </Button>
             </MenuItem>
           </div>
         </div>
@@ -109,6 +142,15 @@ const TaskSection: React.FC<TaskSectionProps> = ({
         setIsModalOpen={setUpdateTaskModal}
         btnText={'Update Task'}
       />
+
+      {selectedTask && (
+        <ShareTaskModal
+          isModalOpen={shareTaskModal === true}
+          setIsModalOpen={setShareTaskModal}
+          task={selectedTask} show={false} onHide={function (): void {
+            throw new Error('Function not implemented.');
+          } }        />
+      )}
     </VerticalStackLayout>
   );
 };

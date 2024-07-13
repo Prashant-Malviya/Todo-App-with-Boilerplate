@@ -4,6 +4,7 @@ import { Account } from '../types/account';
 import APIService from './api.service';
 
 export default class AccountService extends APIService {
+  [x: string]: any;
   getAccountDetails = async (): Promise<ApiResponse<Account>> => {
     const userAccessToken = JSON.parse(
       localStorage.getItem('access-token'),
